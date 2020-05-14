@@ -1,0 +1,40 @@
+import pandas as pd
+
+class covdata():
+    
+    def __init__(self):
+        self.columnas = ['date','province','ine_code',"new_cases","activos","hospitalized","intensive_care","deceased","cases_accumulated","recovered","cases_per_cienmil","intensive_care_per_1000000","deceassed_per_100000","hospitalized_per_100000","daily_deaths","deaths_last_week"]
+        self.url = "https://raw.githubusercontent.com/montera34/escovid19data/master/data/output/covid19-provincias-spain_consolidated.csv"
+        
+        self.data = pd.read_csv(self.url)
+        self.data = self.data.fillna(0)
+        self.data = self.data[self.columnas]
+
+        self.ciudad = False
+        self.estado = False
+        self.comunidad = False
+        
+    def select(self,ine_code):
+        
+        self.ciudad = self.data.loc[self.data["ine_code"] == ine_code]
+        print('Has seleccionado los datos del INE_CODE {}'.format(ine_code))
+        self.estado = True
+        self.comunidad = ine_code
+        return self.ciudad
+    
+    def excel_todo(self):
+        
+        nombre_excel = input('Introduzca un nombre para su fichero: ')
+        self.data.to_excel('{}.xlsx'.format(nombre_excel),columns= self.columnas)
+        print('Transformacion de todos los datos a excel completada')
+        return
+    def select_excel(self):
+        
+        if self.estado == False :
+            print('Error Selecciona una comunidad  primero , utilice el comando select()')
+            
+        else:
+            nombre_excel = input('Introduzca un nombre para su fichero: ')
+            self.ciudad.to_excel('{}.xlsx'.format(nombre_excel),columns= self.columnas)
+            print('Transformacion de los datos del INE_CODE {} a excel completada'.format(self.comunidad))
+            
